@@ -1,5 +1,6 @@
 import { Box, Grid } from '@mui/material'
 import Button from '@mui/material-next/Button'
+import { sha256 } from 'js-sha256'
 import { useState } from 'react'
 
 function pinPad(props: any) {
@@ -42,8 +43,9 @@ function pinPad(props: any) {
 
     const enterButton = async () => {
         // let code = [1, 1, 1, 1]
+        console.log(sha256(pin))
         const code = await props.store.get("pin")
-        if (JSON.stringify(code) == JSON.stringify(pin)) {
+        if (code == sha256(pin)) {
             console.log("CORRECT PIN")
             props.setAuth(true)
             setPin(defaultPin)

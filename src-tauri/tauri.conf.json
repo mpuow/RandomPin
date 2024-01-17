@@ -12,6 +12,9 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "window": {
+        "setSize": true
+      },
       "shell": {
         "all": false,
         "open": true

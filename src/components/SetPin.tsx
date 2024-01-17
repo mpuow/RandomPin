@@ -31,8 +31,8 @@ function SetPin(props: any) {
                             event.preventDefault()
                             const formData = new FormData(event.currentTarget)
                             const formJson = Object.fromEntries((formData as any).entries())
-                            const email = formJson.email
-                            console.log(email)
+                            const pin = formJson.pin
+                            setPin(pin)
                             handleClose()
                         },
                     }}
@@ -47,13 +47,14 @@ function SetPin(props: any) {
                             required
                             margin="dense"
                             id="name"
-                            name="email"
+                            name="pin"
                             label="Enter Pin"
-                            type="email"
+                            type="text"
                             fullWidth
                             variant="standard"
+                            inputProps={{ maxLength: 4 }}
                         />
-                        <TextField
+                        {/* <TextField
                             // autoFocus
                             required
                             margin="dense"
@@ -63,7 +64,7 @@ function SetPin(props: any) {
                             type="email"
                             fullWidth
                             variant="standard"
-                        />
+                        /> */}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
@@ -74,18 +75,20 @@ function SetPin(props: any) {
         )
     }
 
-    async function setPin() {
+    async function setPin(pin: any) {
         // const store = new Store(".pin.json")
-        setOpen(true)
-        await props.store.set("pin", [1, 1, 1, 1])
-        await props.store.save()
+        // setOpen(true)
+        let preHashPin = [pin[0], pin[1], pin[2], pin[3]]
+        console.log(sha256(preHashPin))
+        const hashedPin = sha256(preHashPin)
 
-        console.log(sha256("[1,1,1,1]"))
+        await props.store.set("pin", hashedPin)
+        await props.store.save()
     }
 
     return (
         <>
-            <Button variant="filled" onClick={() => setPin()}>Set Pin</Button>
+            <Button variant="filled" onClick={() => setOpen(true)}>Set Pin</Button>
 
             <FormDialog />
         </>
