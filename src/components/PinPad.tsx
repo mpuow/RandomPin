@@ -40,8 +40,9 @@ function pinPad(props: any) {
         ))
     }
 
-    const enterButton = () => {
-        let code = [1, 1, 1, 1]
+    const enterButton = async () => {
+        // let code = [1, 1, 1, 1]
+        const code = await props.store.get("pin")
         if (JSON.stringify(code) == JSON.stringify(pin)) {
             console.log("CORRECT PIN")
             props.setAuth(true)

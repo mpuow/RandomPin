@@ -1,9 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 // import { invoke } from "@tauri-apps/api/tauri"
 import Button from '@mui/material-next/Button'
 import { Box, Container, Grid } from '@mui/material'
 import "./App.css"
 import PinPad from "./components/PinPad"
+import { Store } from "tauri-plugin-store-api"
+import SetPin from "./components/SetPin"
 
 function App() {
 
@@ -18,6 +20,7 @@ function App() {
   const defaultNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, "Clear", 0, "Del"]
   const [randomisedNumbers, setRandomisedNumbers]: any = useState([])
   const [auth, setAuth] = useState(false)
+  const store = new Store(".pin.json")
 
   // Recursion to deal with misswapping
   const placeClearDelButtons = (array: any[]) => {
@@ -59,15 +62,18 @@ function App() {
     // setPin(defaultPin)
   }
 
+  useEffect(() => {
+    randomiseButton()
+  }, [])
+
   return (
     <div className="container">
-      <h1>Random Pin App</h1>
 
-      <p>Ideas: Randomise pin every time, login with correct pin, salt/hash pin, user log input, salt/hash input in database</p>
+      <Button variant="filled" onClick={() => randomiseButton()}>Randomise Numbers</Button>
 
-      <Button variant="filled" onClick={() => randomiseButton()}>Randomise / Open app</Button>
+      <SetPin store={store} />
 
-      <PinPad randomisedNumbers={randomisedNumbers} setAuth={setAuth} />
+      <PinPad randomisedNumbers={randomisedNumbers} setAuth={setAuth} store={store} />
 
 
       {/* <form
