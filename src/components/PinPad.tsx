@@ -2,6 +2,7 @@ import { Box, Grid } from '@mui/material'
 import Button from '@mui/material-next/Button'
 import { sha256 } from 'js-sha256'
 import { useState } from 'react'
+import { changeWindowSize } from './Journal'
 
 function pinPad(props: any) {
 
@@ -27,7 +28,6 @@ function pinPad(props: any) {
     }
 
     const deleteButton = () => {
-
         let changeIndex = -1
         for (let i = pin.length - 1; i > -1; i--) {
             if (pin[i] !== "") {
@@ -42,11 +42,11 @@ function pinPad(props: any) {
     }
 
     const enterButton = async () => {
-        // let code = [1, 1, 1, 1]
         console.log(sha256(pin))
         const code = await props.store.get("pin")
         if (code == sha256(pin)) {
             console.log("CORRECT PIN")
+            changeWindowSize(500, 500)
             props.setAuth(true)
             setPin(defaultPin)
         } else {

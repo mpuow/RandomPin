@@ -1,0 +1,7 @@
+# One of these works.
+# Included to ignore app refresh when inserting to SQLite db file 
+
+*.db
+.db
+data.db
+data.db/*
