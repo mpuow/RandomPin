@@ -108,10 +108,7 @@ function App() {
                     {}
                 </>
                 :
-                // <Box bgcolor={'green'}>
-                //     AUTH
-                //     <Button onClick={() => setAuth(false)}>GO BACK</Button>
-                // </Box>
+
                 <Journal setAuth={setAuth} />
             }
 
