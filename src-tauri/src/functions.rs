@@ -20,9 +20,9 @@ pub fn add_from_frontend(title: &str, content: &str) {
 }
 
 #[tauri::command]
-pub fn delete_from_frontend() {
+pub fn delete_from_frontend(title: &str, content: &str) {
     println!("DELETE test");
-    let _ = delete_from_sqlite();
+    let _ = delete_from_sqlite(title, content);
 }
 
 fn insert_to_sqlite(title: &str, content: &str) -> Result<()> {
@@ -40,12 +40,12 @@ fn insert_to_sqlite(title: &str, content: &str) -> Result<()> {
     Ok(())
 }
 
-fn delete_from_sqlite() -> Result<()> {
+fn delete_from_sqlite(title: &str, content: &str) -> Result<()> {
     let conn = Connection::open("data.db")?;
 
     conn.execute(
-        "delete from journal where title == ?1",
-        ["Test Title"]
+        "delete from journal where title == ?1 and content == ?2",
+        (title, content)
     )?;
 
     Ok(())
@@ -53,7 +53,7 @@ fn delete_from_sqlite() -> Result<()> {
 
 #[tauri::command]
 pub fn send_data_to_react() -> Vec<Journal> {
-    println!("SENDING DATA test");
+    // println!("SENDING DATA test");
 
     let data_vec = Vec::new();
     // data_vec.push("Some string");

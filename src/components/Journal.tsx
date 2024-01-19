@@ -10,13 +10,6 @@ export async function changeWindowSize(width:number, height:number) {
     console.log("change size")
 }
 
-async function addToSQLite(title: string, content: string) {
-    await invoke("add_from_frontend", ({title: title, content: content}))
-}
-
-async function deleteFromSQLite() {
-    await invoke("delete_from_frontend")
-}
 
 function Journal(props: { setAuth: (arg0: boolean) => void }) {
     
@@ -25,7 +18,7 @@ function Journal(props: { setAuth: (arg0: boolean) => void }) {
         title: "",
         content: ""
     })
-
+    
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         // e.preventDefault()
         addToSQLite(addValues.title, addValues.content)
@@ -33,7 +26,16 @@ function Journal(props: { setAuth: (arg0: boolean) => void }) {
             title: "",
             content: ""
         })
+        
+    }
 
+    function addToSQLite(title: string, content: string) {
+        invoke("add_from_frontend", ({title: title, content: content}))
+    }
+    
+    function deleteFromSQLite(title: string, content: string) {
+        invoke("delete_from_frontend", ({title: title, content: content}))
+        dataFromSQLite()
     }
     
     function dataFromSQLite() {
@@ -64,19 +66,19 @@ function Journal(props: { setAuth: (arg0: boolean) => void }) {
             </Box>
 
             <Box>
-                VIEW PREVIOUS ENTRIES (w/ time, date, title, content)
+                VIEW PREVIOUS ENTRIES (w/ time & date, title, content)
                 {/* <Button onClick={() => dataFromSQLite()}>Data from rust</Button> */}
                 {journalArray.map((val: any) => (
                     <Grid key={val.title}>
                         <Box bgcolor={'cyan'}>{val.title}</Box>
                         <Box bgcolor={'violet'}>{val.content}</Box>
+                        <Button onClick={() => deleteFromSQLite(val.title, val.content)}>Delete</Button>
                     </Grid>
                 ))}
             </Box>
 
             <Button variant='filled' onClick={() => changeWindowSize(800, 600)}>Change window size</Button>
 
-            <Button onClick={() => deleteFromSQLite()}>Delete</Button>
         </>
     )
 }
