@@ -1,3 +1,5 @@
+use chrono::{Local, DateTime, FixedOffset};
+
 use rusqlite::{Connection, Result};
 use rusqlite::Error;
 
@@ -11,6 +13,7 @@ use rusqlite::Error;
 pub struct Journal {
     title: String,
     content: String,
+    date: String
 }
 
 #[tauri::command]
@@ -20,32 +23,33 @@ pub fn add_from_frontend(title: &str, content: &str) {
 }
 
 #[tauri::command]
-pub fn delete_from_frontend(title: &str, content: &str) {
+pub fn delete_from_frontend(date: &str) {
     println!("DELETE test");
-    let _ = delete_from_sqlite(title, content);
+    let _ = delete_from_sqlite(date);
 }
 
 fn insert_to_sqlite(title: &str, content: &str) -> Result<()> {
     let conn = Connection::open("data.db")?;
     
-    let test = Journal {
+    let insert = Journal {
         title: title.to_string(),
         content: content.to_string(),
+        date: Local::now().to_string()
     };
     conn.execute(
-        "insert into journal (title, content) values (?1, ?2)",
-        (&test.title, &test.content)
+        "insert into journal (title, content, date) values (?1, ?2, ?3)",
+        (&insert.title, &insert.content, &insert.date)
     )?;
 
     Ok(())
 }
 
-fn delete_from_sqlite(title: &str, content: &str) -> Result<()> {
+fn delete_from_sqlite(date: &str) -> Result<()> {
     let conn = Connection::open("data.db")?;
 
     conn.execute(
-        "delete from journal where title == ?1 and content == ?2",
-        (title, content)
+        "delete from journal where date == ?1",
+        [date]
     )?;
 
     Ok(())
@@ -76,6 +80,7 @@ fn get_data_from_sqlite(mut data_vec: Vec<Journal>) -> Result<Vec<Journal>, Erro
         Ok(Journal {
             title: row.get(0)?,
             content: row.get(1)?,
+            date: row.get(2)?,
         })
     })?;
 

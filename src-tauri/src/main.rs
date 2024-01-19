@@ -14,7 +14,8 @@ fn main() -> Result<()> {
     conn.execute(
         "create table if not exists journal (
              title text not null,
-             content text not null
+             content text not null,
+             date text not null
          )",
         (),
     )?;

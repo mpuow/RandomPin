@@ -26,20 +26,75 @@ function Journal(props: { setAuth: (arg0: boolean) => void }) {
             title: "",
             content: ""
         })
-        
     }
 
     function addToSQLite(title: string, content: string) {
         invoke("add_from_frontend", ({title: title, content: content}))
     }
     
-    function deleteFromSQLite(title: string, content: string) {
-        invoke("delete_from_frontend", ({title: title, content: content}))
+    function deleteFromSQLite(date: string) {
+        invoke("delete_from_frontend", ({date: date}))
         dataFromSQLite()
     }
     
     function dataFromSQLite() {
         invoke("send_data_to_react").then((message) => setJournalArray(message))
+    }
+
+    function formatTime(time:string) {
+
+        let timeSplitArray = time.split(":")
+        let hour:number = +timeSplitArray[0]
+        let minute = timeSplitArray[1]
+        let end = "AM"
+
+        if (hour == 0) {
+            hour = 12
+        } else if (hour == 12) {
+            end = "PM"
+        } else if (hour > 12) {
+            hour = hour - 12
+            end = "PM"
+        }
+
+        let returnTime = [hour, minute].join(":") + end
+
+        return returnTime
+    }
+
+    function formatDate(date:string) {
+
+        let count = 0
+        let beforeSplit = ""
+
+        for(let i = 0; i < date.length; i++) {
+
+            if (date[i] == ":") {
+                count++
+            }
+
+            if (count > 1) {
+                break
+            }
+            beforeSplit = beforeSplit + date[i]
+            
+            console.log(date[i])
+        }
+
+        let splitArray = beforeSplit.split(" ")
+
+        let beforeDateFormat = splitArray[0]
+        let preDateSplit = ""
+
+        for(let i = 0; i < beforeDateFormat.length ; i++) {
+            preDateSplit = preDateSplit + beforeDateFormat[i]
+        }
+        let splitDate = preDateSplit.split("-")
+        let d = [splitDate[2], splitDate[1], splitDate[0] ].join("/")
+
+        let finalDate = [formatTime(splitArray[1]), d].join(" ")
+
+        return finalDate
     }
 
     useEffect(() => {
@@ -59,8 +114,8 @@ function Journal(props: { setAuth: (arg0: boolean) => void }) {
                     className="row"
                     onSubmit={(e) => { handleSubmit(e) }}
                 >
-                    <Input onChange={(e) => setAddValues({ ...addValues, title: e.target.value })} placeholder='Add title'></Input>
-                    <Input onChange={(e) => setAddValues({ ...addValues, content: e.target.value })} placeholder='Add content'></Input>
+                    <Input onChange={(e) => setAddValues({ ...addValues, title: e.target.value })} placeholder='Add title' inputProps={{ maxLength: 20 }}></Input>
+                    <Input onChange={(e) => setAddValues({ ...addValues, content: e.target.value })} placeholder='Add content' inputProps={{ maxLength: 200 }}></Input>
                     <Button type='submit'>Add</Button>
                 </form>
             </Box>
@@ -72,9 +127,12 @@ function Journal(props: { setAuth: (arg0: boolean) => void }) {
                     <Grid key={val.title}>
                         <Box bgcolor={'cyan'}>{val.title}</Box>
                         <Box bgcolor={'violet'}>{val.content}</Box>
-                        <Button onClick={() => deleteFromSQLite(val.title, val.content)}>Delete</Button>
+                        <Box bgcolor={'limegreen'}>{formatDate(val.date)}</Box>
+                        <Button onClick={() => deleteFromSQLite(val.date)}>Delete</Button>
                     </Grid>
                 ))}
+
+                ENCRYPT AND DECRYPT DATABASE
             </Box>
 
             <Button variant='filled' onClick={() => changeWindowSize(800, 600)}>Change window size</Button>
