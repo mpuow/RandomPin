@@ -14,6 +14,7 @@ export async function changeWindowSize(width:number, height:number) {
 function Journal(props: { setAuth: (arg0: boolean) => void }) {
     
     const [journalArray, setJournalArray]:any = useState([])
+    const [encryptString, setEncryptString] = useState("")
     const [addValues, setAddValues] = useState({
         title: "",
         content: ""
@@ -101,6 +102,10 @@ function Journal(props: { setAuth: (arg0: boolean) => void }) {
         dataFromSQLite()
     }, [])
 
+    function encrypt() {
+        setEncryptString("okernjh")
+    }
+
     return (
         <>
             <Box bgcolor={'green'}>
@@ -136,6 +141,9 @@ function Journal(props: { setAuth: (arg0: boolean) => void }) {
             </Box>
 
             <Button variant='filled' onClick={() => changeWindowSize(800, 600)}>Change window size</Button>
+
+            <Button variant='filled' onClick={() => encrypt()}>Encrypt stuff</Button>
+            {encryptString}
 
         </>
     )

@@ -88,7 +88,7 @@ function SetPin(props: any) {
 
     return (
         <>
-            <Button variant="filled" onClick={() => setOpen(true)}>Set Pin</Button>
+            <Button variant="filled" onClick={() => setOpen(true)}>Change Pin</Button>
 
             <FormDialog />
         </>

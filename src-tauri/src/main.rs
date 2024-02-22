@@ -7,6 +7,7 @@ use functions::delete_from_frontend;
 use functions::send_data_to_react;
 use rusqlite::{Connection, Result};
 
+mod encryption;
 
 fn main() -> Result<()> {
     let conn = Connection::open("data.db")?;
